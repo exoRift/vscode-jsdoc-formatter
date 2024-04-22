@@ -17,10 +17,10 @@ export function activate (context: vscode.ExtensionContext): void {
 
         for (const line of lines) {
           if (!line.match(directiveRegex)) continue
-          const sections = line.split(/ +?/)
+          const sections = line.split(/ +/)
 
           for (let s = 0; s < sections.length; ++s) {
-            if (s >= 4) break // Comment
+            if (s >= 5) break // Comment
 
             if (!largestSizes.has(s) || sections[s].length > largestSizes.get(s)!) largestSizes.set(s, sections[s].length)
           }
@@ -33,16 +33,18 @@ export function activate (context: vscode.ExtensionContext): void {
             newLines.push(line)
             continue
           }
-          const sections = line.split(/ +?/)
+          const sections = line.split(/ +/)
 
+          let encounteredReturnDirective = false
+          let encounteredType = false
           for (let s = 0; s < sections.length; ++s) {
-            const isReturnDirective = sections[s].match(/@returns?/)
-            if (s >= 4) break // Comment
+            encounteredReturnDirective ||= Boolean(sections[s].match(/@returns?/))
+            encounteredType ||= Boolean(sections[s].match(/{.+?}/))
+            const nextIsType = sections[s + 1]?.match(/{.+?}/)
 
-            // console.log(s, sections[s], largestSizes, sections[s].length)
-            sections[s] += ' '.repeat((isReturnDirective ? largestSizes.get(3)! + largestSizes.get(s)! + 1 : largestSizes.get(s)!) - sections[s].length)
+            if (s >= (encounteredType ? 5 : 4)) break // Comment
 
-            if (isReturnDirective) break
+            sections[s] += ' '.repeat((encounteredReturnDirective && !nextIsType ? largestSizes.get(s + 1)! + largestSizes.get(s)! + 1 : largestSizes.get(s)!) - sections[s].length)
           }
 
           newLines.push(sections.join(' '))
