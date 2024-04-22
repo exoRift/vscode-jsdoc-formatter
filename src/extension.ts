@@ -23,6 +23,8 @@ export function activate (context: vscode.ExtensionContext): void {
             if (s >= 4) break // Comment
 
             if (!largestSizes.has(s) || sections[s].length > largestSizes.get(s)!) largestSizes.set(s, sections[s].length)
+
+            if (sections[s].match(/@see/)) break
           }
         }
 
@@ -45,9 +47,11 @@ export function activate (context: vscode.ExtensionContext): void {
             if (s >= ((encounteredType ? 4 : 3) - (encounteredReturnDirective ? 1 : 0))) break // Comment
 
             sections[s] += ' '.repeat((encounteredReturnDirective && !nextIsType ? largestSizes.get(s + 1)! + largestSizes.get(s)! + 1 : largestSizes.get(s)!) - sections[s].length)
+
+            if (sections[s].match(/@see/)) break
           }
 
-          newLines.push(sections.join(' '))
+          newLines.push(sections.join(' ').trimEnd())
         }
 
         return newLines.join('\n')

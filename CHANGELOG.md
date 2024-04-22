@@ -1,5 +1,9 @@
 # Change Log
 
+## [v1.0.4](https://github.com/exoRift/vscode-jsdoc-formatter/releases/tag/v1.0.4)
+- Trim the end of lines
+- Support @see
+
 ## [v1.0.3](https://github.com/exoRift/vscode-jsdoc-formatter/releases/tag/v1.0.3)
 - Support doc indentations
 

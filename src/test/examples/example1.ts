@@ -9,8 +9,10 @@ function hello (arg1: string, longerarg2: number): void {
    * A nested function
    * @param arg Its argument
    * @prop arg.test *Its property
+   * @see https://example.com
+   * @param nocomment
    */
-  function nested (arg: object): void {
+  function nested (arg: object, nocommend: string): void {
 
   }
 }
