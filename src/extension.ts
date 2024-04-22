@@ -1,26 +1,65 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode'
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate (context: vscode.ExtensionContext) {
+const extensionRegex = /\.(?:js|mjs|cjs|ts|mts|cts|jsx|tsx)$/
+const commentRegex = /\/\*\* *\r?\n(.+?)\r?\n? *\*\//gs
+const directiveRegex = /^ *\* *@/
 
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "jsdoc-formatter" is now active!')
+export function activate (context: vscode.ExtensionContext): void {
+  const disposable = vscode.commands.registerCommand('jsdoc-formatter.format', async () => {
+    const editor = vscode.window.activeTextEditor
+    if (editor?.document.fileName.match(extensionRegex)) {
+      const text = editor.document.getText()
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
-  const disposable = vscode.commands.registerCommand('jsdoc-formatter.helloWorld', () => {
-    // The code you place here will be executed every time your command is executed
-    // Display a message box to the user
-    void vscode.window.showInformationMessage('Hello World from jsdoc-formatter!')
+      const replaced = text.replace(commentRegex, (match) => {
+        const lines = match.split(/\r?\n/)
+
+        const largestSizes = new Map<number, number>()
+
+        for (const line of lines) {
+          if (!line.match(directiveRegex)) continue
+          const sections = line.split(/ +?/)
+
+          for (let s = 0; s < sections.length; ++s) {
+            if (s >= 4) break // Comment
+
+            if (!largestSizes.has(s) || sections[s].length > largestSizes.get(s)!) largestSizes.set(s, sections[s].length)
+          }
+        }
+
+        const newLines: string[] = []
+
+        for (const line of lines) {
+          if (!line.match(directiveRegex)) {
+            newLines.push(line)
+            continue
+          }
+          const sections = line.split(/ +?/)
+
+          for (let s = 0; s < sections.length; ++s) {
+            const isReturnDirective = sections[s].match(/@returns?/)
+            if (s >= 4) break // Comment
+
+            // console.log(s, sections[s], largestSizes, sections[s].length)
+            sections[s] += ' '.repeat((isReturnDirective ? largestSizes.get(3)! + largestSizes.get(s)! + 1 : largestSizes.get(s)!) - sections[s].length)
+
+            if (isReturnDirective) break
+          }
+
+          newLines.push(sections.join(' '))
+        }
+
+        return newLines.join('\n')
+      })
+
+      const success = await editor.edit((builder) => {
+        builder.replace(new vscode.Range(editor.document.lineAt(0).range.start, editor.document.lineAt(editor.document.lineCount - 1).range.end), replaced)
+      })
+
+      if (success) void vscode.window.showInformationMessage('Formatted JSDoc comments in the current file')
+      else void vscode.window.showErrorMessage('Something went wrong!')
+
+    } else void vscode.window.showWarningMessage('Active file is not a JS file')
   })
 
   context.subscriptions.push(disposable)
 }
-
-// This method is called when your extension is deactivated
-export function deactivate () {}

@@ -2,7 +2,7 @@
   "name": "jsdoc-formatter",
   "displayName": "jsdoc-formatter",
   "description": "Auto format JSDocs to have consistent spaces",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.88.0"
   },
@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "jsdoc-formatter.helloWorld",
-        "title": "Hello World"
+        "command": "jsdoc-formatter.format",
+        "title": "JSDoc Formatter: Format JSDoc Comments"
       }
     ]
   },
