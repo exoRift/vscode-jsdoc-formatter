@@ -3,7 +3,7 @@
   "publisher": "ArthurNeuman",
   "displayName": "jsdoc-formatter",
   "description": "Auto format JSDocs to have consistent spaces",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "engines": {
     "vscode": "^1.88.0"
   },

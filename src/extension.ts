@@ -42,7 +42,7 @@ export function activate (context: vscode.ExtensionContext): void {
             encounteredType ||= Boolean(sections[s].match(/{.+?}/))
             const nextIsType = sections[s + 1]?.match(/{.+?}/)
 
-            if (s >= (encounteredType ? 5 : 4)) break // Comment
+            if (s >= ((encounteredType ? 5 : 4) - (encounteredReturnDirective ? 1 : 0))) break // Comment
 
             sections[s] += ' '.repeat((encounteredReturnDirective && !nextIsType ? largestSizes.get(s + 1)! + largestSizes.get(s)! + 1 : largestSizes.get(s)!) - sections[s].length)
           }
