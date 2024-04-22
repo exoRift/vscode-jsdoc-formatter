@@ -1,5 +1,8 @@
 # Change Log
 
+## [v1.0.3](https://github.com/exoRift/vscode-jsdoc-formatter/releases/tag/v1.0.3)
+- Support doc indentations
+
 ## [v1.0.2](https://github.com/exoRift/vscode-jsdoc-formatter/releases/tag/v1.0.2)
 - Fix an issue with `@return` introduced in v1.0.1
 

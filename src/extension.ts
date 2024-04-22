@@ -17,10 +17,10 @@ export function activate (context: vscode.ExtensionContext): void {
 
         for (const line of lines) {
           if (!line.match(directiveRegex)) continue
-          const sections = line.split(/ +/)
+          const sections = line.split(/(?<!^ *) +/m)
 
           for (let s = 0; s < sections.length; ++s) {
-            if (s >= 5) break // Comment
+            if (s >= 4) break // Comment
 
             if (!largestSizes.has(s) || sections[s].length > largestSizes.get(s)!) largestSizes.set(s, sections[s].length)
           }
@@ -33,7 +33,7 @@ export function activate (context: vscode.ExtensionContext): void {
             newLines.push(line)
             continue
           }
-          const sections = line.split(/ +/)
+          const sections = line.split(/(?<!^ *) +/m)
 
           let encounteredReturnDirective = false
           let encounteredType = false
@@ -42,7 +42,7 @@ export function activate (context: vscode.ExtensionContext): void {
             encounteredType ||= Boolean(sections[s].match(/{.+?}/))
             const nextIsType = sections[s + 1]?.match(/{.+?}/)
 
-            if (s >= ((encounteredType ? 5 : 4) - (encounteredReturnDirective ? 1 : 0))) break // Comment
+            if (s >= ((encounteredType ? 4 : 3) - (encounteredReturnDirective ? 1 : 0))) break // Comment
 
             sections[s] += ' '.repeat((encounteredReturnDirective && !nextIsType ? largestSizes.get(s + 1)! + largestSizes.get(s)! + 1 : largestSizes.get(s)!) - sections[s].length)
           }
