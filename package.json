@@ -19,6 +19,9 @@
       }
     ]
   },
+  "repository": {
+    "url": "https://github.com/exoRift/vscode-jsdoc-formatter"
+  },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
