@@ -3,6 +3,7 @@ import * as vscode from 'vscode'
 const extensionRegex = /\.(?:js|mjs|cjs|ts|mts|cts|jsx|tsx)$/
 const commentRegex = /\/\*\* *\r?\n(.+?)\r?\n? *\*\//gs
 const directiveRegex = /^ *\* *@/
+const singleDirectiveRegex = /@(?:see|note|todo)/
 
 export function activate (context: vscode.ExtensionContext): void {
   const disposable = vscode.commands.registerCommand('jsdoc-formatter.format', async () => {
@@ -24,7 +25,7 @@ export function activate (context: vscode.ExtensionContext): void {
 
             if (!largestSizes.has(s) || sections[s].length > largestSizes.get(s)!) largestSizes.set(s, sections[s].length)
 
-            if (sections[s].match(/@see/)) break
+            if (sections[s].match(singleDirectiveRegex)) break
           }
         }
 
@@ -48,7 +49,7 @@ export function activate (context: vscode.ExtensionContext): void {
 
             sections[s] += ' '.repeat((encounteredReturnDirective && !nextIsType ? largestSizes.get(s + 1)! + largestSizes.get(s)! + 1 : largestSizes.get(s)!) - sections[s].length)
 
-            if (sections[s].match(/@see/)) break
+            if (sections[s].match(singleDirectiveRegex)) break
           }
 
           newLines.push(sections.join(' ').trimEnd())
