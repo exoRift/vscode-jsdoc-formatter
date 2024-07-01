@@ -21,10 +21,9 @@ async function formatCommand (): Promise<void> {
 
         for (let s = 0; s < sections.length; ++s) {
           if (s >= 4) break // Comment
+          if (sections[s].match(singleDirectiveRegex)) break
 
           if (!largestSizes.has(s) || sections[s].length > largestSizes.get(s)!) largestSizes.set(s, sections[s].length)
-
-          if (sections[s].match(singleDirectiveRegex)) break
         }
       }
 
